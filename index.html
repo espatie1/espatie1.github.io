@@ -1,36 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Test Page</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pavel Stepanov — Projects</title>
+  <meta name="color-scheme" content="dark light" />
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      color: white;
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+    :root{
+      --bg-solid:#05070b; --bg-navy-1:#07162b; --bg-navy-2:#0a2442;
+      --text:#e7edf6; --muted:#a6b3c6; --accent:#7ab8ff;
+      --card-bg:rgba(255,255,255,.03); --card-bg-hover:rgba(255,255,255,.06);
+      --card-stroke:rgba(255,255,255,.08); --card-stroke-hover:rgba(122,184,255,.45);
+      --shadow:0 6px 28px rgba(70,130,200,.25);
+      --radius:16px; --maxw:1120px; --gap:20px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text);
+      font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Helvetica Neue,Arial;
+      background:var(--bg-solid);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    body::before{
+      content:""; position:fixed; inset:0; z-index:-1;
+      background:
+        radial-gradient(1200px 900px at 20% 0%, rgba(40,110,190,.28), transparent 60%),
+        radial-gradient(1200px 900px at 90% 120%, rgba(0,80,160,.25), transparent 60%),
+        linear-gradient(180deg, #000 0%, var(--bg-navy-1) 35%, var(--bg-navy-2) 100%);
+      background-repeat:no-repeat; background-attachment:fixed;
     }
 
-    h1 {
-      background: rgba(0,0,0,0.4);
-      padding: 20px 40px;
-      border-radius: 12px;
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:64px 20px 80px}
+
+    .hero{padding:24px 0 12px}
+    .title{margin:0 0 8px; font-weight:700; letter-spacing:.2px; font-size:clamp(28px,4.6vw,44px)}
+    .subtitle{margin:0 0 18px; color:var(--muted); font-size:clamp(14px,2.2vw,18px); max-width:70ch}
+
+    .links{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:28px}
+    .chip{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:999px; border:1px solid var(--card-stroke);
+      background:rgba(255,255,255,.02); color:var(--text); text-decoration:none;
+      transition:border-color .2s ease, transform .2s ease, background .2s ease;
+    }
+    .chip:hover,.chip:focus-visible{
+      border-color:var(--card-stroke-hover); background:rgba(255,255,255,.04);
+      transform:translateY(-1px); outline:none;
     }
 
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+    .section-title{margin:26px 0 16px; font-size:18px; font-weight:600; letter-spacing:.3px; color:#d9e6ff; opacity:.95}
+
+    .projects-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:var(--gap)}
+    .card{
+      display:flex; flex-direction:column; justify-content:space-between; gap:12px;
+      padding:16px; border-radius:var(--radius); border:1px solid var(--card-stroke);
+      background:var(--card-bg); text-decoration:none; color:var(--text);
+      aspect-ratio:1/1; 
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      will-change:transform;
+    }
+    .card:hover,.card:focus-visible{
+      transform:translateY(-4px); box-shadow:var(--shadow);
+      border-color:var(--card-stroke-hover); background:var(--card-bg-hover); outline:none;
+    }
+    .card:active{transform:translateY(-2px)}
+    .card .name{font-weight:650; letter-spacing:.2px; line-height:1.25; font-size:16px; margin:0}
+    .card .desc{margin:6px 0 0; color:var(--muted); font-size:14px; line-height:1.4}
+    .card .foot{margin-top:auto; font-size:12px; letter-spacing:.3px; opacity:.9; color:#b8d8ff}
+
+    .footer{margin-top:48px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); color:var(--muted); font-size:13px}
+
+    .lang-switch{
+      position:fixed; top:18px; right:18px; z-index:5;
+      display:flex; gap:8px; background:rgba(0,0,0,.25);
+      padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(6px);
+    }
+    .lang-btn{
+      appearance:none; border:none; cursor:pointer;
+      padding:8px 10px; min-width:44px;
+      border-radius:999px; font:600 12px/1 system-ui;
+      color:var(--text); background:transparent;
+      border:1px solid rgba(255,255,255,.12);
+      transition:background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .lang-btn:hover,.lang-btn:focus-visible{background:rgba(255,255,255,.06); transform:translateY(-1px); outline:none}
+    .lang-btn.active{background:rgba(122,184,255,.18); border-color:var(--card-stroke-hover)}
+    @media (prefers-reduced-motion:reduce){
+      .card,.chip,.lang-btn{transition:none !important}
+      .card:hover,.chip:hover,.lang-btn:hover{transform:none !important}
     }
   </style>
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn active" data-lang-btn="en" aria-pressed="true">EN</button>
+    <button class="lang-btn" data-lang-btn="cs" aria-pressed="false">CZ</button>
+    <button class="lang-btn" data-lang-btn="ru" aria-pressed="false">RU</button>
+  </div>
+
+  <main class="wrap">
+    <section class="hero" aria-label="Intro">
+      <h1 class="title" data-i18n="title">Pavel Stepanov</h1>
+      <p class="subtitle" data-i18n="subtitle">
+        BSc student (VUT FIT, Brno). C/C++ systems & embedded. Seeking C/C++ Student/Intern; graduation 2026.
+      </p>
+      <nav class="links" aria-label="Contacts">
+        <a class="chip" href="https://github.com/espatie1" target="_blank" rel="noopener" data-i18n="links.github">GitHub</a>
+        <a class="chip" href="https://www.linkedin.com/in/pavel-stepanov-aba92827a/" target="_blank" rel="noopener" data-i18n="links.linkedin">LinkedIn</a>
+        <a class="chip" href="mailto:espatie1@gmail.com" data-i18n="links.email">espatie1@gmail.com</a>
+        <a class="chip" href="https://espatie1.github.io/" target="_blank" rel="noopener" data-i18n="links.site">Website</a>
+      </nav>
+    </section>
+
+    <section aria-label="Projects">
+      <h2 class="section-title" data-i18n="sections.projects">Projects</h2>
+
+      <div class="projects-grid">
+        <!-- ESP32 TFLite Micro -->
+        <a class="card" href="https://github.com/espatie1/ESP32-TFLiteMicro" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p1.name">ESP32 TFLite Micro</h3>
+            <p class="desc" data-i18n="projects.p1.desc">TinyML on ESP32 (ESP-IDF/FreeRTOS) with TCS3200; tasks, GPIO drivers, TF-Lite Micro integration.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- SEM-Stitcher -->
+        <a class="card" href="https://github.com/espatie1/SEM-Stitcher" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p2.name">SEM-Stitcher</h3>
+            <p class="desc" data-i18n="projects.p2.desc">Real-time SEM mosaic builder; phase correlation + ZNCC refine; IRLS solver; streaming gRPC.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- Network Sniffer -->
+        <a class="card" href="https://github.com/espatie1/Network_Sniffer" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p3.name">Network Sniffer</h3>
+            <p class="desc" data-i18n="projects.p3.desc">CLI sniffer via libpcap; parses Ethernet/TCP/UDP; Valgrind-clean; Make + CI.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- MiniZig → ASM Compiler -->
+        <a class="card" href="https://github.com/espatie1/Compiler_Project" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p4.name">MiniZig → ASM Compiler</h3>
+            <p class="desc" data-i18n="projects.p4.desc">Lexer, LL parser, AST, symbol table, custom ASM codegen; ~100 unit tests.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- SOL25 Parser & Interpreter -->
+        <a class="card" href="https://github.com/espatie1/SOL25-Parser-and-Interpreter" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p5.name">SOL25 Parser & Interpreter</h3>
+            <p class="desc" data-i18n="projects.p5.desc">Parser with lexical/syntax/semantic checks → XML AST; PHP interpreter walking the AST.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- Robot Simulator (Qt) -->
+        <a class="card" href="https://github.com/finler6/robot-Simulator" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p6.name">Robot Simulator (Qt)</h3>
+            <p class="desc" data-i18n="projects.p6.desc">Real-time sim of autonomous/RC robots with collisions; 2.3K LOC; JSON config.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- Semaphore Simulation -->
+        <a class="card" href="https://github.com/espatie1/Semaphore_Simulation" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p7.name">Semaphore Simulation</h3>
+            <p class="desc" data-i18n="projects.p7.desc">Multi-process post-office model; POSIX semaphores + shared memory.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- VHDL CPU & UART RX -->
+        <a class="card" href="https://github.com/espatie1/VHDL_university" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p8.name">VHDL CPU & UART RX</h3>
+            <p class="desc" data-i18n="projects.p8.desc">8-bit soft-core CPU (VHDL-93) for BrainF; UART RX (8N1) with 16× oversampling FSM.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+
+        <!-- School Management System -->
+        <a class="card" href="https://github.com/espatie1/School_management_MAUI" target="_blank" rel="noopener">
+          <div>
+            <h3 class="name" data-i18n="projects.p9.name">School Management System</h3>
+            <p class="desc" data-i18n="projects.p9.desc">.NET 8 + MAUI + EF Core; layered architecture (UI→BL→DAL), UoW/Repository.</p>
+          </div>
+          <div class="foot">github.com →</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="footer" aria-label="Footer">
+      <span data-i18n="footer_text">Last updated — 2025-09-10 · Brno, Czechia · © Pavel Stepanov.</span>
+    </section>
+  </main>
+
+  <script>
+    const i18n = {
+      en: {
+        title: "Pavel Stepanov",
+        subtitle: "BSc student (VUT FIT, Brno). C/C++ systems & embedded. Seeking C/C++ Software Developer Student/Intern; graduation 2026.",
+        links: { github:"GitHub", linkedin:"LinkedIn", email:"espatie1@gmail.com", site:"Website" },
+        sections: { projects:"Projects" },
+        footer_text: "Last updated — 2025-09-10 · Brno, Czechia · © Pavel Stepanov.",
+        projects:{
+          p1:{ name:"ESP32 TFLite Micro", desc:"TinyML on ESP32 (ESP-IDF/FreeRTOS) with TCS3200; tasks, GPIO drivers, TF-Lite Micro integration." },
+          p2:{ name:"SEM-Stitcher", desc:"Real-time SEM mosaic builder; phase correlation + ZNCC refine; IRLS solver; streaming gRPC." },
+          p3:{ name:"Network Sniffer", desc:"CLI sniffer via libpcap; parses Ethernet/TCP/UDP; Valgrind-clean; Make + CI." },
+          p4:{ name:"MiniZig → ASM Compiler", desc:"Lexer, LL parser, AST, symbol table, custom ASM codegen; ~100 unit tests." },
+          p5:{ name:"SOL25 Parser & Interpreter", desc:"Parser with lexical/syntax/semantic checks → XML AST; PHP interpreter walking the AST." },
+          p6:{ name:"Robot Simulator (Qt)", desc:"Real-time sim of autonomous/RC robots with collisions; 2.3K LOC; JSON config." },
+          p7:{ name:"Semaphore Simulation", desc:"Multi-process post-office model; POSIX semaphores + shared memory." },
+          p8:{ name:"VHDL CPU & UART RX", desc:"8-bit soft-core CPU (VHDL-93) for BrainF; UART RX (8N1) with 16× oversampling FSM." },
+          p9:{ name:"School Management System", desc:".NET 8 + MAUI + EF Core; layered architecture (UI→BL→DAL), UoW/Repository." }
+        }
+      },
+      cs: {
+        title: "Pavel Stepanov",
+        subtitle: "Student Bc. (VUT FIT, Brno). C/C++ systémy & embedded. Hledám C/C++ Software Developer stáž/brigádu; ukončení 2026.",
+        links: { github:"GitHub", linkedin:"LinkedIn", email:"espatie1@gmail.com", site:"Web" },
+        sections: { projects:"Projekty" },
+        footer_text: "Poslední aktualizace — 10. 9. 2025 · Brno, Česko · © Pavel Stepanov.",
+        projects:{
+          p1:{ name:"ESP32 TFLite Micro", desc:"TinyML na ESP32 (ESP-IDF/FreeRTOS) s TCS3200; úlohy, GPIO ovladače, integrace TF-Lite Micro." },
+          p2:{ name:"SEM-Stitcher", desc:"Skládání SEM mozaik v reálném čase; phase correlation + ZNCC; IRLS řešič; streamování gRPC." },
+          p3:{ name:"Network Sniffer", desc:"CLI sniffer přes libpcap; Ethernet/TCP/UDP; Valgrind-clean; Make + CI." },
+          p4:{ name:"MiniZig → ASM Kompilátor", desc:"Lexer, LL parser, AST, symbol table, vlastní ASM codegen; ~100 unit testů." },
+          p5:{ name:"SOL25 Parser & Interpreter", desc:"Parser s lexikální/syntakt./sémant. kontrolou → XML AST; PHP interpret prochází AST." },
+          p6:{ name:"Robot Simulator (Qt)", desc:"Simulace autonomních/RC robotů s kolizemi; 2,3K LOC; JSON konfigurace." },
+          p7:{ name:"Semaphore Simulation", desc:"Víceprocesový model pošty; POSIX semafory + sdílená paměť." },
+          p8:{ name:"VHDL CPU & UART RX", desc:"8bit soft-core CPU (VHDL-93) pro BrainF; UART RX (8N1) s 16× oversampling FSM." },
+          p9:{ name:"School Management System", desc:".NET 8 + MAUI + EF Core; vrstvená architektura (UI→BL→DAL), UoW/Repository." }
+        }
+      },
+      ru: {
+        title: "Pavel Stepanov",
+        subtitle: "Студент бакалавриата (VUT FIT, Брно). C/C++ systems & embedded. Ищу стажировку/частичную занятость C/C++ Software Developer; выпуск в 2026.",
+        links: { github:"GitHub", linkedin:"LinkedIn", email:"espatie1@gmail.com", site:"Сайт" },
+        sections: { projects:"Проекты" },
+        footer_text: "Последнее обновление — 2025-09-10 · Брно, Чехия · © Pavel Stepanov.",
+        projects:{
+          p1:{ name:"ESP32 TFLite Micro", desc:"TinyML на ESP32 (ESP-IDF/FreeRTOS) с TCS3200; задачи, GPIO-драйверы, интеграция TF-Lite Micro." },
+          p2:{ name:"SEM-Stitcher", desc:"Реал-тайм сборка SEM-мозаик; phase correlation + ZNCC; IRLS-решатель; потоковый gRPC." },
+          p3:{ name:"Network Sniffer", desc:"CLI-сниффер через libpcap; Ethernet/TCP/UDP; Valgrind-clean; Make + CI." },
+          p4:{ name:"MiniZig → ASM Компилятор", desc:"Лексер, LL-парсер, AST, таблица символов, собственный ASM-кодоген; ~100 unit-тестов." },
+          p5:{ name:"SOL25 Parser & Interpreter", desc:"Парсер с лекс./синт./сем. проверками → XML AST; PHP-интерпретатор обходит AST." },
+          p6:{ name:"Robot Simulator (Qt)", desc:"Симуляция автономных/RC-роботов с коллизиями; 2.3K LOC; JSON-конфиг." },
+          p7:{ name:"Semaphore Simulation", desc:"Многопроцессная модель отделения связи; POSIX-семафоры + общая память." },
+          p8:{ name:"VHDL CPU & UART RX", desc:"8-бит soft-core CPU (VHDL-93) для BrainF; UART RX (8N1) с 16× oversampling FSM." },
+          p9:{ name:"School Management System", desc:".NET 8 + MAUI + EF Core; слоистая архитектура (UI→BL→DAL), UoW/Repository." }
+        }
+      }
+    };
+
+    const defaultLang = "en";
+    const saved = localStorage.getItem("lang");
+    const initial = (["en","cs","ru"].includes(saved) ? saved : defaultLang);
+
+    function get(obj, path){
+      return path.split(".").reduce((o,k)=> (o && o[k]!=null ? o[k] : null), obj);
+    }
+    function applyLang(lang){
+      const root = document.documentElement;
+      root.lang = lang;
+      root.dataset.lang = lang;
+
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        const val = get(i18n[lang], key);
+        if(typeof val === "string"){ el.textContent = val; }
+      });
+
+      document.querySelectorAll("[data-lang-btn]").forEach(btn=>{
+        const active = btn.dataset.langBtn === lang;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    applyLang(initial);
+
+    document.querySelectorAll("[data-lang-btn]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const lang = btn.dataset.langBtn;
+        localStorage.setItem("lang", lang);
+        applyLang(lang);
+      });
+    });
+  </script>
 </body>
 </html>
